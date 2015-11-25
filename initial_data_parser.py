@@ -34,6 +34,7 @@ class Email(object):
 
     def get_owner(self):
         return self.owner
+
     
 class Folder(object):
     def __init__(self, folder_path, parent_name, owner):
@@ -76,7 +77,6 @@ class Folder(object):
         return self.full_list.__getitem__(val)
     def __len__(self):
         return len(self.full_list)
-
 
 
 class Person(object):
