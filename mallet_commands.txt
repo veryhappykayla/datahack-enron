@@ -1,0 +1,15 @@
+1. First, download MALLET from http://mallet.cs.umass.edu/download.php and unzip to some directory (e.g., C:\mallet)
+
+2. Navigate in CMD to that directory
+
+3. To import data, run (changing filepaths):
+
+bin\mallet import-dir --input C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam --output C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam.mallet --keep-sequence --remove-stopwords
+
+4. To train the topic model (changing filepaths, and num-topics if desired):
+
+bin\mallet train-topics --input C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam.mallet --num-topics 200 --output-topic-keys C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-keys.txt --output-doc-topics C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-compostion.txt --output-state C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-topic-state.gz --inferencer-filename C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-inferencer
+
+5. To get the unigram topic info from the topic state:
+a) Unzip kam-topic-state.gz
+b) Run lda_topicdistr.py (check filesnames inside are OK)
