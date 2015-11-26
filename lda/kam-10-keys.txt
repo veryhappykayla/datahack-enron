@@ -1,0 +1,10 @@
+0	0.5	subject vince received vkaminski@aol.com message iris vince.j.kaminski@enron.com london image forwarded vkamins@enron.com esmtp fri sie kaminski/hou/ect date kaminski les mx.aol.com mack 
+1	0.5	risk management energy trading financial enron market business credit markets derivatives research power industry company year april information group investment 
+2	0.5	vince subject shirley kaminski/hou/ect@ect e-mail message original kaminski kevin stinson forwarded enron mike vasant kaminski/hou/ect crenshaw anita maureen zimin group 
+3	0.5	vince subject enron kaminski resume summer research john work time university interview message finance forwarded group vince.j.kaminski@enron.com interested dear kaminski/hou/ect 
+4	0.5	vince communications subject communications@enron forwarded mark kaminski/hou/ect kaminski/hou/ect@ect weekly john btu attached david report power meeting enron phone e-mail pdf 
+5	0.5	power gas network energy information market world service prices e-mail web storage security natural california access system free price cera 
+6	0.5	vince subject model kaminski/hou/ect@ect price data forwarded options option kaminski/hou/ect pricing models forward risk time weather var energy prices enron 
+7	0.5	vince subject conference enron presentation kaminski message houston vince.j.kaminski@enron.com meeting energy university original time dinner fax thursday friday finance forwarded 
+8	0.5	enron power company year people state time it's day true make don't free employees good dilbert india card project check 
+9	0.5	vince enron subject group john meeting energy ena north forwarded corp kaminski/hou/ect@ect america gas mark jennifer beth development project mike 
