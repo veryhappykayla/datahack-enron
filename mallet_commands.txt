@@ -10,5 +10,6 @@ bin\mallet import-dir --input C:\Users\kayla\Documents\GitHub\datahack-enron\lda
 
 bin\mallet train-topics --input C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam.mallet --num-topics 200 --output-topic-keys C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-keys.txt --output-doc-topics C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-compostion.txt --output-state C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-topic-state.gz --inferencer-filename C:\Users\kayla\Documents\GitHub\datahack-enron\lda\kam-inferencer
 
-5. To get the unigram topic info from the topic state, run lda_topicdistr.py (check filesnames inside are OK)
-
+5. To get the unigram topic info from the topic state:
+a) Unzip kam-topic-state.gz
+b) Run lda_topicdistr.py (check filesnames inside are OK)
