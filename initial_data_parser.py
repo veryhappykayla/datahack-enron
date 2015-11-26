@@ -10,7 +10,9 @@ import base64
 ######################
 
 def load_person_dict(fp = file('./persons.json')):
-    return json.load(fp)
+    res = json.load(fp)
+    fp.close()
+    return res
 
 PERSON_DICT = load_person_dict()
 
@@ -39,6 +41,13 @@ def dump_email_to_file(email, dir_path = "C:\\Users\\Guy\\Desktop\\datahack\\sen
     file_name = (email.get_folder_name() + "/" + email.get_name()).replace("/","#")
     #print dir_path + owner_name + "_" + file_name + "_" + base64.b64encode(email.get_headers()['Date'])
     file(dir_path + owner_name + "_" + file_name + "_" + base64.b64encode(email.get_headers()['Date']), 'wb').write(email.get_content())
+	
+def parse_filename_to_data(filename):
+	filename = filename.split("/")[-1]
+	filename = filename.split("\\")[-1]
+	owner_name, email_path, date = filename.split("_")
+	date = base64.b64decode(date)
+	return owner_name, email_path, date
 
 ###############
 ### OBJECTS ###
