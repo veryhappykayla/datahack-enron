@@ -67,3 +67,32 @@ def map_person_to_mails(person):
                 if M[i] > n + 5: # 5 is magic number
                     possible_mails.append(i)
     return (name, get_unique_list(possible_mails))
+
+def load_person_dict(fp = file('./persons.json')):
+    return json.load(fp)
+
+############## need to move to another modul #################3
+
+def is_sent_by_user(Person, mail, person_dictionay):
+    name = Person.name
+    relevant_emails = person_dictionay[name]
+    if mail.headers['From'] in relevant_emails:
+        return True
+    return False
+    
+
+def filter_mail_for_user_by_time(Person, start_date, end_date, person_dictionay):
+	name = Person.name
+	relevant_emails = person_dictionay[name]
+	new_mails = []
+	for mail in Person.get_all_emails():
+		if mail.headers['From'] in relevant_emails:
+			new_mails.append(mail)
+	# check if the time fits
+	if start_date != None and end_date != None:
+		for main in new_mails:
+			if  start_date < mail.headers['Date'] < end_date:
+				pass
+			else:
+				new_mails.remove(mail)
+	return new_mails
