@@ -43,11 +43,32 @@ def dump_email_to_file(email, dir_path = "C:\\Users\\Guy\\Desktop\\datahack\\sen
     file(dir_path + owner_name + "_" + file_name + "_" + base64.b64encode(email.get_headers()['Date']), 'wb').write(email.get_content())
 	
 def parse_filename_to_data(filename):
-	filename = filename.split("/")[-1]
-	filename = filename.split("\\")[-1]
-	owner_name, email_path, date = filename.split("_")
-	date = base64.b64decode(date)
-	return owner_name, email_path, date
+    filename = filename.split("/")[-1]
+    filename = filename.split("\\")[-1]
+    owner_name, email_path, date = filename.split("_")
+    date = base64.b64decode(date)
+    return owner_name, email_path, date
+
+def parse_threshabs(file_path, num_of_topics = 10):
+    data = [x.strip().split('\t') for x in file(file_path,'rb').readlines()]
+    data = data[1:]
+    meta_data = [parse_filename_to_data(x[1]) for x in data]
+    #meta_data = [('allen-p', 'sent#103', 'Wed, 6 Sep 2000 06:04:00 -0700 (PDT)') for x in xrange(len(data))]
+    data = [map(float,x[2:]) for x in data]
+    total_num_of_topics = len(data[0])
+    res = {}
+    for email_meta_data, email_data in zip(meta_data, data):
+        curr_data = res.get(email_meta_data[0], [0 for i in xrange(total_num_of_topics)])
+        res[email_meta_data[0]] = [x+y for x,y in zip(curr_data, email_data)]
+
+    final_res = []
+    for owner_name, user_data in res.iteritems():
+        strongest_indices = sorted(enumerate(user_data), key = lambda x: -x[1])[:10]
+        sum_probs = sum([x[1] for x in strongest_indices])
+        strongest_indices = [(x[0],x[1]/sum_probs) for x in strongest_indices]
+        final_res.append((owner_name, strongest_indices))
+    return final_res
+
 
 ###############
 ### OBJECTS ###
