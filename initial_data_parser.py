@@ -11,17 +11,26 @@ def parse_email_headers(email_data):
     headers = Parser().parsestr(email_data)
     return headers
 
+def parse_email_content(email_data):
+    content_start = email_data.find('\r\n\r\n') + 4
+    return email_data[content_start:]
+    
+
 ###############
 ### OBJECTS ###
 ###############
 
 class Email(object):
-    def __init__(self, email_path, folder_name, owner):
+    def __init__(self, email_path, folder_name, owner, with_content = False):
         email_data = file(email_path, 'rb').read()
         self.headers = parse_email_headers(email_data)
         self.name = email_path.split('\\')[-1]
         self.owner = owner
         self.folder_name = folder_name
+        if with_content:
+            self.content = parse_email_content(email_data)
+        else:
+            self.content = None
 
     def get_headers(self):
         return self.headers
@@ -35,9 +44,14 @@ class Email(object):
     def get_owner(self):
         return self.owner
 
-    
+    def get_content(self):
+        try:
+            return self.content
+        except: #backwards compatibility with old pickle
+            return None
+
 class Folder(object):
-    def __init__(self, folder_path, parent_name, owner):
+    def __init__(self, folder_path, parent_name, owner, with_content = False):
         if parent_name == "":
             self.name = folder_path.split('\\')[-1]
         else:
@@ -47,10 +61,10 @@ class Folder(object):
         all_paths = glob.glob(folder_path + "/*")
         #parse emails
         email_paths = [x for x in all_paths if os.path.isfile(x)]
-        self.emails_list = [Email(email_path, self.name, self.owner) for email_path in email_paths]
+        self.emails_list = [Email(email_path, self.name, self.owner, with_content) for email_path in email_paths]
         #parse inner folders
         inner_folders_paths = [x for x in all_paths if not os.path.isfile(x)]
-        self.inner_folders_list = [Folder(inner_folders_path, self.name, owner) for inner_folders_path in inner_folders_paths]
+        self.inner_folders_list = [Folder(inner_folders_path, self.name, owner, with_content) for inner_folders_path in inner_folders_paths]
         self.full_list = self.inner_folders_list + self.emails_list
 
     def get_owner(self):
@@ -80,10 +94,10 @@ class Folder(object):
 
 
 class Person(object):
-    def __init__(self, person_path):
+    def __init__(self, person_path, with_content = False):
         print "Creating " + person_path.split('\\')[-1] + "..."
         folder_paths = glob.glob(person_path + "/*")
-        self.folders_list = [Folder(folder_path, "", self) for folder_path in folder_paths]
+        self.folders_list = [Folder(folder_path, "", self, with_content) for folder_path in folder_paths]
         self.name = person_path.split('\\')[-1]
 
     def get_name(self):
