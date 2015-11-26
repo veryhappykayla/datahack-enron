@@ -14,7 +14,21 @@ def load_person_dict(fp = file('./persons.json')):
     fp.close()
     return res
 
+def load_topic_dict(fp = file('./lda/topic_categorization.txt')):
+    res = json.load(fp)
+    fp.close()
+    return res
+
+def reverse_dict(d):
+    new_d = {}
+    for x,y in d.iteritems():
+        for z in y:
+            new_d[z] = new_d.get(z, ()) + (x,)
+    return new_d
+
 PERSON_DICT = load_person_dict()
+TOPIC_DICT = load_topic_dict()
+REV_TOPIC_DICT = reverse_dict(TOPIC_DICT)
 
 #########################
 ### PARSING FUNCTIONS ###
@@ -45,21 +59,25 @@ def dump_email_to_file(email, dir_path = "C:\\Users\\Guy\\Desktop\\datahack\\sen
 def parse_filename_to_data(filename):
     filename = filename.split("/")[-1]
     filename = filename.split("\\")[-1]
-    owner_name, email_path, date = filename.split("_")
+    splited = filename.split("_")
+    owner_name, email_path, date = splited[0], '_'.join(splited[1:-1]).replace("%23","/"), splited[-1]
     date = base64.b64decode(date)
     return owner_name, email_path, date
-
-def parse_threshabs(file_path, num_of_topics = 10):
+        
+def parse_threshabs_to_users(file_path, num_of_topics = 10):
     data = [x.strip().split('\t') for x in file(file_path,'rb').readlines()]
     data = data[1:]
     meta_data = [parse_filename_to_data(x[1]) for x in data]
-    #meta_data = [('allen-p', 'sent#103', 'Wed, 6 Sep 2000 06:04:00 -0700 (PDT)') for x in xrange(len(data))]
     data = [map(float,x[2:]) for x in data]
     total_num_of_topics = len(data[0])
     res = {}
+    counter = 0
     for email_meta_data, email_data in zip(meta_data, data):
+        counter += 1
         curr_data = res.get(email_meta_data[0], [0 for i in xrange(total_num_of_topics)])
         res[email_meta_data[0]] = [x+y for x,y in zip(curr_data, email_data)]
+        if not counter % 1000:
+            print counter
 
     final_res = []
     for owner_name, user_data in res.iteritems():
@@ -68,6 +86,33 @@ def parse_threshabs(file_path, num_of_topics = 10):
         strongest_indices = [(x[0],x[1]/sum_probs) for x in strongest_indices]
         final_res.append((owner_name, strongest_indices))
     return final_res
+
+def parse_threshabs_to_users_by_emails(file_path):
+    data = [x.strip().split('\t') for x in file(file_path,'rb').readlines()]
+    data = data[1:]
+    meta_data = [parse_filename_to_data(x[1]) for x in data]
+    data = [map(float,x[2:]) for x in data]
+    total_num_of_topics = len(data[0])
+    res = {}
+    counter = 0
+    for email_meta_data, email_data in zip(meta_data, data):
+        counter += 1
+        owner_name, email_path, date = email_meta_data
+        curr_l = res.setdefault(owner_name, [])
+        res[owner_name].append((email_path, date, label_email_topic(email_data)))
+        if not counter % 1000:
+            print counter
+
+    return res
+
+def label_email_topic(email_data):
+    #email_data is a list of weights, each one corresponding to a topic.
+    label_strength = {}
+    for i,f in enumerate(email_data):
+        for label in REV_TOPIC_DICT[i]:
+            label_strength[label] = label_strength.get(label, 0) + f
+    return sorted(label_strength.items(), key = lambda x: -x[1])[0][0]
+        
 
 
 ###############
