@@ -73,7 +73,6 @@ def get_mail_by_day(date, mails):
         return (i, ret_list)
     return (0, ret_list)
 
-
 def get_all_mails_for_all_days(mails):
     mails = sort_mails(mails)
     for i in range(len(mails)):
@@ -115,6 +114,20 @@ def count_mails_in_day(mails, day, WEEK_DAY_dict = WEEK_DAYS): # day is a value 
         if WEEK_DAY_dict[utils.dateParser(mail.headers['Date']).isoweekday()] == day:
             count += 1
     return count
+
+def filter_by_hour(mails, hour): # day is a value of WEEK_DAYS
+    ret_mail = []
+    for mail in mails:
+        if utils.dateParser(mail.headers['Date']).hour == hour:
+            ret_mail.append(mail)
+    return ret_mail
+
+def get_mails_by_day(mails, day, WEEK_DAY_dict = WEEK_DAYS):
+    ret_mails = []
+    for mail in mails:
+        if WEEK_DAY_dict[utils.dateParser(mail.headers['Date']).isoweekday()] == day:
+            ret_mails.append(mail)
+    return ret_mails
 
 def count_for_each_day(mails):
     days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
