@@ -105,6 +105,28 @@ def parse_threshabs_to_users_by_emails(file_path):
 
     return res
 
+def parse_threshabs_to_politics(file_path):
+    data = [x.strip().split('\t') for x in file(file_path,'rb').readlines()]
+    data = data[1:]
+    meta_data = [parse_filename_to_data(x[1]) for x in data]
+    data = [map(float,x[2:]) for x in data]
+    total_num_of_topics = len(data[0])
+    res = {}
+    counter = 0
+    for email_meta_data, email_data in zip(meta_data, data):
+        counter += 1
+        owner_name, email_path, date = email_meta_data
+        curr_l = res.setdefault(owner_name, [])
+        res[owner_name].append((email_path, date, is_politics_email(email_data)))
+        if not counter % 1000:
+            print counter
+
+    return res
+
+def is_politics_email(email_data):
+    return email_data[34] > 0.3
+    #"C:\Users\Guy\Desktop\datahack\enron_mail_20150507\maildir\jones-t\sent\2442"
+
 def label_email_topic(email_data):
     #email_data is a list of weights, each one corresponding to a topic.
     label_strength = {}
@@ -113,7 +135,13 @@ def label_email_topic(email_data):
             label_strength[label] = label_strength.get(label, 0) + f
     return sorted(label_strength.items(), key = lambda x: -x[1])[0][0]
         
-
+def HACK_label_email_topic(email_data):
+    #email_data is a list of weights, each one corresponding to a topic.
+    label_strength = {}
+    for i,f in email_data:
+        for label in REV_TOPIC_DICT[i]:
+            label_strength[label] = label_strength.get(label, 0) + f
+    return sorted(label_strength.items(), key = lambda x: -x[1])
 
 ###############
 ### OBJECTS ###
